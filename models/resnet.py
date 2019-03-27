@@ -81,7 +81,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, depth, num_classes=1000, norm_type=None, basicblock=False):
+    def __init__(self, depth, num_classes=1000, norm_type=None, norm_batch=-1, basicblock=False):
         super(ResNet, self).__init__()
         # Model type specifies number of layers for CIFAR-10 model
         assert (depth - 2) % 6 == 0, 'depth should be 6n+2'
@@ -93,12 +93,10 @@ class ResNet(nn.Module):
             block = Bottleneck if depth >=44 else BasicBlock
         
         if norm_type == 'bn':
-            from torch.nn import BatchNorm2d as Normlayer
-        elif norm_type == 'in':
-            from torch.nn import InstanceNorm2d as Normlayer
+            from .bn import BN as Normlayer
         elif norm_type == 'bin':
-            from .batchinstancenorm import BatchInstanceNorm2d as Normlayer
-        self.normlayer = functools.partial(Normlayer, affine=True)
+            from .bin import BIN as Normlayer
+        self.normlayer = functools.partial(Normlayer, affine=True, batch=norm_batch)
         
         self.inplanes = 16
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, padding=1,
