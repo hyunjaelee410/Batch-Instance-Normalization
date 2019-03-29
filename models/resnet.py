@@ -100,6 +100,8 @@ class ResNet(nn.Module):
             from .san_v1 import SAN_V1 as Normlayer
         elif norm_type == 'san_v2':
             from .san_v2 import SAN_V2 as Normlayer
+        elif norm_type == 'san_v3':
+            from .san_v3 import SAN_V3 as Normlayer
         elif norm_type == 'adan_v1':
             from .adan_v1 import ADAN_V1 as Normlayer
         self.normlayer = functools.partial(Normlayer, affine=True, batch=norm_batch)
